@@ -29,7 +29,7 @@ class Database:
                       joy_emotion VARCHAR(255) NOT NULL,
                       sorrow_emotion VARCHAR(255) NOT NULL,
                       anger_emotion VARCHAR(255) NOT NULL,
-                      surprise_emotion VARCHAR(255) NOT NULL,
+                      surprise_emotion VARCHAR(255) NOT NULL,   
                       family_group_id UUID NOT NULL
                   );
               """)

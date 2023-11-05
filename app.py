@@ -14,6 +14,12 @@ conn = Database(host="localhost",
 conn.create_tables()
 
 
+
+#{
+#	"family_user_chatId": "123456789",
+#	"user_mode": "A"
+#}
+
 @app.route('/register_user', methods=['POST'])
 def register_user():
     content = request.json
@@ -35,6 +41,13 @@ def register_user():
     })
 
 
+
+#{
+#	"family_user_chatId": "123456789",
+#	"family_member_chatId":"1111448781",
+#	"user_mode": "F"
+#}
+
 @app.route('/register_family_member', methods=['POST'])
 def register_family_member():
     content = request.json
@@ -43,7 +56,7 @@ def register_family_member():
             "error": "Invalid data"
         })
 
-    query = queries.GET_USER_BY_CHAT_ID(content["family_user_chatId"])
+    query = queries.GET_USER_BY_CHAT_ID(content["family_user_chatId"]) # admin
     conn.cur.execute(query)
     user = conn.cur.fetchone()
     if user is None:
@@ -51,14 +64,14 @@ def register_family_member():
             "error": "User not found"
         })
 
-    query = queries.INSERT_FAMILY_MEMBER(content["family_user_chatId"], user[3])
+    query = queries.INSERT_FAMILY_MEMBER(content["family_member_chatId"], user[3])
     conn.cur.execute(query)
     user_id = conn.cur.fetchone()[0]
     conn.conn.commit()
     return jsonify({
         "user_id": user_id,
         "user_mode": "F",
-        "family_user_chatId": content["family_user_chatId"]
+        "family_user_chatId": content["family_member_chatId"]
     })
 
 
