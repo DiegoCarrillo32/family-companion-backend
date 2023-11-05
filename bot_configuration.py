@@ -3,7 +3,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from queries import *
 
-TOKEN: Final = '6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk'
+TOKEN: Final = ''
 BOT_USERNAME: Final = '@ai_cozy_home_bot'
 
 
