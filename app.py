@@ -11,7 +11,7 @@ app = Flask(__name__)
 conn = Database(host="localhost",
                 database="family_db",
                 user="postgres",
-                password="12345")
+                password="1234")
 
 # Si no tiene las tablas creadas en su local, corra el siguiente comando.
 conn.create_tables()
@@ -131,6 +131,24 @@ def detected_face():
     return jsonify({
         "message": "Success"
     })
+
+
+@app.route('/check_emotions', methods=['GET'])
+def check_emotions():
+    query = queries.CHECK_EMOTIONS_AND_CLEAR()
+    conn.cur.execute(query)
+    results = conn.cur.fetchall()
+    text = ''
+    for result in results:
+        text += f'Family member {result[0]} has detected a face with {result[1]} joy, {result[2]} sorrow, {result[3]} anger and {result[4]} surprise\n'
+    url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id=1362991318&text={text}'
+    response = requests.post(url)
+    print(response.content)
+    return jsonify({
+        "message": "Success"
+    })
+
+
 
 
 if __name__ == '__main__':
