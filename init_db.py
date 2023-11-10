@@ -36,6 +36,39 @@ class Database:
 
         self.conn.commit()
 
+    def function_check_emotions_and_clear(self):
+        self.cur.execute("""
+        CREATE OR REPLACE FUNCTION check_emotions_and_clear()
+        RETURNS TABLE(emotion VARCHAR, status VARCHAR, recommendation VARCHAR) AS $$
+        DECLARE
+            joy_count INT;
+            sorrow_count INT;
+            anger_count INT;
+            surprise_count INT;
+        BEGIN
+            SELECT COUNT(*) INTO joy_count FROM detection_log WHERE joy_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE sorrow_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO anger_count FROM detection_log WHERE anger_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO surprise_count FROM detection_log WHERE surprise_emotion IN ('Very Likely', 'Likely');
+            
+            IF joy_count > 5 THEN
+                RETURN QUERY SELECT 'Joy'::VARCHAR, 'High Joy Detected'::VARCHAR, 'Keep up the positive environment!'::VARCHAR;
+            ELSIF sorrow_count > 5 THEN
+                RETURN QUERY SELECT 'Sorrow'::VARCHAR, 'High Sorrow Detected'::VARCHAR, 'Consider providing support and care.'::VARCHAR;
+            ELSIF anger_count > 5 THEN
+                RETURN QUERY SELECT 'Anger'::VARCHAR, 'High Anger Detected'::VARCHAR, 'Engage in calming activities and conflict resolution.'::VARCHAR;
+            ELSIF surprise_count > 5 THEN
+                RETURN QUERY SELECT 'Surprise'::VARCHAR, 'High Surprise Detected'::VARCHAR, 'Ensure the surprises are pleasant, or provide stability.'::VARCHAR;
+            END IF;
+
+            -- Vaciar la tabla después de devolver el mensaje.
+            TRUNCATE TABLE detection_log;
+            
+            RETURN;
+        END;
+        $$ LANGUAGE plpgsql;
+        """)
+
     def drop_tables(self):
         self.cur.execute("""
             DROP TABLE IF EXISTS users;

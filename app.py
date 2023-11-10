@@ -126,14 +126,15 @@ def detected_face():
         query = queries.CHECK_EMOTIONS_AND_CLEAR()
         conn.cur.execute(query)
         results = conn.cur.fetchall()
-        conn.conn.commit()
-        text =''
-        for result in results:
-            text += f'{result[0]}: {result[1]}: {result[2]}\n'
-        url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={family_member}&text={text}'
-        # url = f'https://api.telegram.org/bot6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk/sendMessage?chat_id=1362991318&text=algo'
-        response = requests.post(url)
-        print(response.content)
+        if len(results) != 0:
+            conn.conn.commit()
+            text =''
+            for result in results:
+                text += f'{result[0]}: {result[1]}: {result[2]}\n'
+            url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={family_member}&text={text}'
+            # url = f'https://api.telegram.org/bot6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk/sendMessage?chat_id=1362991318&text=algo'
+            response = requests.post(url)
+            print(response.content)
     return jsonify({
         "message": "Success"
     })
