@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import requests
+from bot_configuration import TOKEN
 from init_db import Database
 import queries
 from flask import Flask, request, jsonify
@@ -9,7 +11,7 @@ app = Flask(__name__)
 conn = Database(host="localhost",
                 database="family_db",
                 user="postgres",
-                password="2409")
+                password="12345")
 
 # Si no tiene las tablas creadas en su local, corra el siguiente comando.
 conn.create_tables()
@@ -23,7 +25,7 @@ conn.create_tables()
 @app.route('/register_user', methods=['POST'])
 def register_user():
     content = request.json
-    print(content["user_id"])
+    # print(content["user_id"])
     # Validate the fields
     if content["user_mode"] not in ["A"] and content["family_user_chatId"] is None:
         return jsonify({
@@ -81,6 +83,17 @@ def register_family_member():
 #   anger_emotion :"",
 #   surprise_emotion:""
 # }
+'''SAMPLE DATA
+{
+    "family_user_chatId": "1362991318",
+    "joy": "very likely",
+    "sorrow": "very likely",
+    "anger": "very likely",
+    "surprise": "very likely"
+}
+'''
+
+
 @app.route('/detected_face', methods=['POST'])
 def detected_face():
     # validate the fields above
@@ -96,10 +109,10 @@ def detected_face():
     print(user)
 
     date = datetime.now()
-    query = queries.INSERT_DETECTION_LOG(date, user[3], content["joy"], content["sorrow"], content["anger"],
-                                         content["surprise"])
+    query = queries.INSERT_DETECTION_LOG(date, user[3], content["joy"], content["sorrow"],
+                                         content["anger"], content["surprise"])
 
-    print(query)
+    # print(query)
     conn.cur.execute(query)
     conn.conn.commit()
 
@@ -109,8 +122,12 @@ def detected_face():
 
     for user in family_members:
         print(user[0])
-        # TODO: Enviar los mensajes aqui
-
+        family_member = user[0]
+        text = 'Family member detected a face'
+        url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={family_member}&text={text}'
+        # url = f'https://api.telegram.org/bot6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk/sendMessage?chat_id=1362991318&text=algo'
+        response = requests.post(url)
+        print(response.content)
     return jsonify({
         "message": "Success"
     })

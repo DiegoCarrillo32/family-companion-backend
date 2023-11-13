@@ -30,6 +30,7 @@ def GET_CHAT_ID_BY_FAMILY_GROUP_ID(family_group_id):
         WHERE family_group_id = '{family_group_id}';
     """
 
+
 def INSERT_DETECTION_LOG(detection_date, family_group_id, joy_emotion, sorrow_emotion, anger_emotion, surprise_emotion):
     return f"""
         INSERT INTO detection_log (detection_date, joy_emotion, sorrow_emotion, anger_emotion, surprise_emotion, family_group_id)
