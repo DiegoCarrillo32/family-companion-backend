@@ -38,7 +38,7 @@ class Database:
 
     def function_check_emotions_and_clear(self):
         self.cur.execute("""
-        CREATE OR REPLACE FUNCTION check_emotions_and_clear()
+        CREATE OR REPLACE FUNCTION check_emotions_and_clear(family_id uuid)
         RETURNS TABLE(emotion VARCHAR, status VARCHAR, recommendation VARCHAR) AS $$
         DECLARE
             joy_count INT;
@@ -46,11 +46,11 @@ class Database:
             anger_count INT;
             surprise_count INT;
         BEGIN
-            SELECT COUNT(*) INTO joy_count FROM detection_log WHERE joy_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE sorrow_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO anger_count FROM detection_log WHERE anger_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO surprise_count FROM detection_log WHERE surprise_emotion IN ('Very Likely', 'Likely');
-            
+            SELECT COUNT(*) INTO joy_count FROM detection_log WHERE family_group_id = family_id AND joy_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE family_group_id = family_id AND  sorrow_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO anger_count FROM detection_log WHERE family_group_id = family_id AND anger_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO surprise_count FROM detection_log WHERE family_group_id = family_id AND surprise_emotion IN ('Very Likely', 'Likely');
+       
             IF joy_count > 5 THEN
                 RETURN QUERY SELECT 'Joy'::VARCHAR, 'High Joy Detected'::VARCHAR, 'Keep up the positive environment!'::VARCHAR;
             ELSIF sorrow_count > 5 THEN
@@ -62,7 +62,8 @@ class Database:
             END IF;
 
             -- Vaciar la tabla después de devolver el mensaje.
-            TRUNCATE TABLE detection_log;
+            DELETE FROM detection_log WHERE family_group_id = family_id;
+
             
             RETURN;
         END;
