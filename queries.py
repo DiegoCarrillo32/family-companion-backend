@@ -42,7 +42,7 @@ def GET_DETECTION_LOG():
         SELECT * FROM detection_log
     """
 
-def CHECK_EMOTIONS_AND_CLEAR():
+def CHECK_EMOTIONS_AND_CLEAR(family_group_id):
     return f"""
-    SELECT * FROM check_emotions_and_clear();
+    SELECT * FROM check_emotions_and_clear('{family_group_id}');
     """

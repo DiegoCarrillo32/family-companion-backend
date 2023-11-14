@@ -116,21 +116,22 @@ def detected_face():
     conn.cur.execute(query)
     conn.conn.commit()
 
-    query = queries.GET_CHAT_ID_BY_FAMILY_GROUP_ID(user[3])
+    query = queries.CHECK_EMOTIONS_AND_CLEAR(user[3])
     conn.cur.execute(query)
-    family_members = conn.cur.fetchall()
+    results = conn.cur.fetchall()
 
-    for user in family_members:
-        print(user[0])
-        family_member = user[0]
-        query = queries.CHECK_EMOTIONS_AND_CLEAR()
+    if len(results) != 0:
+        conn.conn.commit()
+        text = ''
+        for result in results:
+            text += f'{result[0]}: {result[1]}: {result[2]}\n'
+        query = queries.GET_CHAT_ID_BY_FAMILY_GROUP_ID(user[3])
         conn.cur.execute(query)
-        results = conn.cur.fetchall()
-        if len(results) != 0:
-            conn.conn.commit()
-            text =''
-            for result in results:
-                text += f'{result[0]}: {result[1]}: {result[2]}\n'
+        family_members = conn.cur.fetchall()
+        for member in family_members:
+            print(member)
+            family_member = member[0]
+
             url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={family_member}&text={text}'
             # url = f'https://api.telegram.org/bot6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk/sendMessage?chat_id=1362991318&text=algo'
             response = requests.post(url)
@@ -139,14 +140,6 @@ def detected_face():
         "message": "Success"
     })
 
-
-@app.route('/check_emotions', methods=['GET'])
-def check_emotions():
-    query = queries.CHECK_EMOTIONS_AND_CLEAR()
-    conn.cur.execute(query)
-    results = conn.cur.fetchall()
-    conn.conn.commit()
-    return jsonify(results)
 
 
 
