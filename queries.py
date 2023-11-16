@@ -36,3 +36,13 @@ def INSERT_DETECTION_LOG(detection_date, family_group_id, joy_emotion, sorrow_em
         INSERT INTO detection_log (detection_date, joy_emotion, sorrow_emotion, anger_emotion, surprise_emotion, family_group_id)
         VALUES ('{detection_date}', '{joy_emotion}', '{sorrow_emotion}', '{anger_emotion}', '{surprise_emotion}', '{family_group_id}')
     """
+
+def GET_DETECTION_LOG():
+    return f"""
+        SELECT * FROM detection_log
+    """
+
+def CHECK_EMOTIONS_AND_CLEAR(family_group_id):
+    return f"""
+    SELECT * FROM check_emotions_and_clear('{family_group_id}');
+    """

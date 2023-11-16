@@ -3,7 +3,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from queries import *
 import requests
-TOKEN: Final = ''
+TOKEN: Final = '6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk'
 BOT_USERNAME: Final = '@ai_cozy_home_bot'
 
 
@@ -74,6 +74,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 
+
 if __name__ == '__main__':
     print('Starting bot....')
     app = Application.builder().token(TOKEN).build()
@@ -82,6 +83,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('config', config_command))
+
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))

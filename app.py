@@ -11,7 +11,7 @@ app = Flask(__name__)
 conn = Database(host="localhost",
                 database="family_db",
                 user="postgres",
-                password="12345")
+                password="1234")
 
 # Si no tiene las tablas creadas en su local, corra el siguiente comando.
 conn.create_tables()
@@ -116,21 +116,32 @@ def detected_face():
     conn.cur.execute(query)
     conn.conn.commit()
 
-    query = queries.GET_CHAT_ID_BY_FAMILY_GROUP_ID(user[3])
+    query = queries.CHECK_EMOTIONS_AND_CLEAR(user[3])
     conn.cur.execute(query)
-    family_members = conn.cur.fetchall()
+    results = conn.cur.fetchall()
 
-    for user in family_members:
-        print(user[0])
-        family_member = user[0]
-        text = 'Family member detected a face'
-        url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={family_member}&text={text}'
-        # url = f'https://api.telegram.org/bot6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk/sendMessage?chat_id=1362991318&text=algo'
-        response = requests.post(url)
-        print(response.content)
+    if len(results) != 0:
+        conn.conn.commit()
+        text = ''
+        for result in results:
+            text += f'{result[0]}: {result[1]}: {result[2]}\n'
+        query = queries.GET_CHAT_ID_BY_FAMILY_GROUP_ID(user[3])
+        conn.cur.execute(query)
+        family_members = conn.cur.fetchall()
+        for member in family_members:
+            print(member)
+            family_member = member[0]
+
+            url = f'https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={family_member}&text={text}'
+            # url = f'https://api.telegram.org/bot6801162244:AAFfKg3o-ThaHmSkwYcI7M6VNxaXaQNNoHk/sendMessage?chat_id=1362991318&text=algo'
+            response = requests.post(url)
+            print(response.content)
     return jsonify({
         "message": "Success"
     })
+
+
+
 
 
 if __name__ == '__main__':
