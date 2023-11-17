@@ -15,6 +15,7 @@ conn = Database(host="localhost",
 
 # Si no tiene las tablas creadas en su local, corra el siguiente comando.
 conn.create_tables()
+conn.function_check_emotions_and_clear()
 
 
 # {
