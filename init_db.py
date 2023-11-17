@@ -2,6 +2,8 @@ import psycopg2
 
 
 class Database:
+
+    # Create and Initialize the local database with the given data
     def __init__(self, host, database, user, password):
         self.conn = psycopg2.connect(
             host=host,
@@ -12,6 +14,7 @@ class Database:
         self.cur = self.conn.cursor()
         self.cur.execute("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 
+    #Function to create the local tables if they not exists
     def create_tables(self):
         self.cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -70,6 +73,7 @@ class Database:
         $$ LANGUAGE plpgsql;
         """)
 
+    # Function to delete the tables
     def drop_tables(self):
         self.cur.execute("""
             DROP TABLE IF EXISTS users;
@@ -81,5 +85,6 @@ class Database:
 
         self.conn.commit()
 
+    # Close the current connection
     def close(self):
         self.conn.close()
