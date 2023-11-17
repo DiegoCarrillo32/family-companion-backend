@@ -126,7 +126,8 @@ def detected_face():
     if len(results) != 0:
         conn.conn.commit()
         text = ''
-        text += f' {results[1]}: {results[2]}\n'
+        for result in results:
+            text += f' {result[1]}: {result[2]}\n'
         #se recupera el chatid del groupid
         query = queries.GET_CHAT_ID_BY_FAMILY_GROUP_ID(user[3])
         conn.cur.execute(query)
