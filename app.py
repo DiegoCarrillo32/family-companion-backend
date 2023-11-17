@@ -108,26 +108,30 @@ def detected_face():
 
     print(user)
 
+    #fecha
     date = datetime.now()
+    #enviar a la base de datos
     query = queries.INSERT_DETECTION_LOG(date, user[3], content["joy"], content["sorrow"],
                                          content["anger"], content["surprise"])
-
     # print(query)
     conn.cur.execute(query)
     conn.conn.commit()
 
+    #invocar la funcion de postgres
     query = queries.CHECK_EMOTIONS_AND_CLEAR(user[3])
     conn.cur.execute(query)
     results = conn.cur.fetchall()
 
+    #sino esta vacio se envia el mensaje
     if len(results) != 0:
         conn.conn.commit()
         text = ''
-        for result in results:
-            text += f'{result[0]}: {result[1]}: {result[2]}\n'
+        text += f' {results[1]}: {results[2]}\n'
+        #se recupera el chatid del groupid
         query = queries.GET_CHAT_ID_BY_FAMILY_GROUP_ID(user[3])
         conn.cur.execute(query)
         family_members = conn.cur.fetchall()
+        #se envia el mensaje cada uno de los miembros
         for member in family_members:
             print(member)
             family_member = member[0]

@@ -50,24 +50,27 @@ class Database:
             surprise_count INT;
         BEGIN
             SELECT COUNT(*) INTO joy_count FROM detection_log WHERE family_group_id = family_id AND joy_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE family_group_id = family_id AND  sorrow_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE family_group_id = family_id AND sorrow_emotion IN ('Very Likely', 'Likely');
             SELECT COUNT(*) INTO anger_count FROM detection_log WHERE family_group_id = family_id AND anger_emotion IN ('Very Likely', 'Likely');
             SELECT COUNT(*) INTO surprise_count FROM detection_log WHERE family_group_id = family_id AND surprise_emotion IN ('Very Likely', 'Likely');
-       
+    
             IF joy_count > 5 THEN
-                RETURN QUERY SELECT 'Joy'::VARCHAR, 'High Joy Detected'::VARCHAR, 'Keep up the positive environment!'::VARCHAR;
+                -- Vaciar la tabla después de devolver el mensaje.
+                RETURN QUERY SELECT 'Joy'::VARCHAR, 'Alegría detectada'::VARCHAR, 'Mantengan el ambiente positivo! Para más ideas sobre actividades familiares felices, visiten youtube.com/watch?v=MOr4h24qFXc'::VARCHAR;
+                DELETE FROM detection_log WHERE family_group_id = family_id;
             ELSIF sorrow_count > 5 THEN
-                RETURN QUERY SELECT 'Sorrow'::VARCHAR, 'High Sorrow Detected'::VARCHAR, 'Consider providing support and care.'::VARCHAR;
+                DELETE FROM detection_log WHERE family_group_id = family_id;
+                RETURN QUERY SELECT 'Sorrow'::VARCHAR, 'Dolor detectado'::VARCHAR, 'Consideren brindar apoyo y cuidado. Para recursos sobre manejo de la tristeza, visiten youtube.com/watch?v=3qoEgprKLjQ'::VARCHAR;
             ELSIF anger_count > 5 THEN
-                RETURN QUERY SELECT 'Anger'::VARCHAR, 'High Anger Detected'::VARCHAR, 'Engage in calming activities and conflict resolution.'::VARCHAR;
+                DELETE FROM detection_log WHERE family_group_id = family_id;
+                RETURN QUERY SELECT 'Anger'::VARCHAR, 'Ira detectada'::VARCHAR, 'Realicen actividades calmantes y resolución de conflictos. Consejos útiles en youtube.com/watch?v=DmvpukP9A5Q'::VARCHAR;
             ELSIF surprise_count > 5 THEN
-                RETURN QUERY SELECT 'Surprise'::VARCHAR, 'High Surprise Detected'::VARCHAR, 'Ensure the surprises are pleasant, or provide stability.'::VARCHAR;
+                DELETE FROM detection_log WHERE family_group_id = family_id;
+                RETURN QUERY SELECT 'Surprise'::VARCHAR, 'Sorpresa detectada'::VARCHAR, 'Aseguren que las sorpresas sean agradables, o proporcionen estabilidad. Vean drromeu.net/las-emociones-sorpresa/ para más información.'::VARCHAR;
             END IF;
-
+    
             -- Vaciar la tabla después de devolver el mensaje.
-            DELETE FROM detection_log WHERE family_group_id = family_id;
-
-            
+    
             RETURN;
         END;
         $$ LANGUAGE plpgsql;
