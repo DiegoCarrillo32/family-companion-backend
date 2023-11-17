@@ -60,7 +60,7 @@ class Database:
                     DELETE FROM detection_log WHERE family_group_id = family_id;
                 ELSIF sorrow_count > 5 THEN
                     DELETE FROM detection_log WHERE family_group_id = family_id;
-                    RETURN QUERY SELECT 'Sorrow'::VARCHAR, 'Trizteza detectado'::VARCHAR, 'Consideren brindar apoyo y cuidado. Para recursos sobre manejo de la tristeza, visiten youtube.com/watch?v=3qoEgprKLjQ'::VARCHAR;
+                    RETURN QUERY SELECT 'Sorrow'::VARCHAR, 'Tristeza detectada'::VARCHAR, 'Consideren brindar apoyo y cuidado. Para recursos sobre manejo de la tristeza, visiten youtube.com/watch?v=3qoEgprKLjQ'::VARCHAR;
                 ELSIF anger_count > 5 THEN
                     DELETE FROM detection_log WHERE family_group_id = family_id;
                     RETURN QUERY SELECT 'Anger'::VARCHAR, 'Ira detectada'::VARCHAR, 'Realicen actividades calmantes y resolución de conflictos. Consejos útiles en youtube.com/watch?v=DmvpukP9A5Q'::VARCHAR;
