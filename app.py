@@ -13,7 +13,7 @@ conn = Database(host="localhost",
                 user="postgres",
                 password="1234")
 
-# Si no tiene las tablas creadas en su local, corra el siguiente comando.
+# Si no tiene las tablas creadas y la función en su local, corra los siguientes comandos.
 conn.create_tables()
 conn.function_check_emotions_and_clear()
 
