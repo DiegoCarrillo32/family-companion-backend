@@ -49,10 +49,10 @@ class Database:
             anger_count INT;
             surprise_count INT;
         BEGIN
-            SELECT COUNT(*) INTO joy_count FROM detection_log WHERE family_group_id = family_id AND joy_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE family_group_id = family_id AND sorrow_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO anger_count FROM detection_log WHERE family_group_id = family_id AND anger_emotion IN ('Very Likely', 'Likely');
-            SELECT COUNT(*) INTO surprise_count FROM detection_log WHERE family_group_id = family_id AND surprise_emotion IN ('Very Likely', 'Likely');
+            SELECT COUNT(*) INTO joy_count FROM detection_log WHERE family_group_id = family_id AND joy_emotion IN ('VERY_LIKELY', 'LIKELY');
+            SELECT COUNT(*) INTO sorrow_count FROM detection_log WHERE family_group_id = family_id AND sorrow_emotion IN ('VERY_LIKELY', 'LIKELY');
+            SELECT COUNT(*) INTO anger_count FROM detection_log WHERE family_group_id = family_id AND anger_emotion IN ('VERY_LIKELY', 'LIKELY');
+            SELECT COUNT(*) INTO surprise_count FROM detection_log WHERE family_group_id = family_id AND surprise_emotion IN ('VERY_LIKELY', 'LIKELY');
     
             IF joy_count > 5 THEN
                 -- Vaciar la tabla después de devolver el mensaje.
